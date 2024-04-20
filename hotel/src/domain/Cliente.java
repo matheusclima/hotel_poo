@@ -1,16 +1,18 @@
 package domain;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Cliente {
-    private UUID id = UUID.randomUUID();
+    private UUID id;
     private String nome;
     private String telefone;
     private String cpf;
     private boolean hospedado;
-    private double conta;
+    public double conta;
 
     public Cliente(String nome, String telefone, String cpf) {
+        this.id = UUID.randomUUID();
         this.nome = nome;
         this.telefone = telefone;
         this.cpf = cpf;
@@ -18,12 +20,29 @@ public class Cliente {
         this.conta = 0;
     }
 
-    public void solicitarServico(Servico servico) {
-        this.conta += servico.getPreco();
+    public Reserva reservarQuarto(Quarto quarto, Date dataDeEntrada, Date dataDeSaida) {
+        quarto.setReservado(true);
+        Reserva reserva = new Reserva(this, quarto, dataDeEntrada, dataDeSaida);
+        return reserva;
     }
 
-    public void consumirItem(Item item) {
+    public void cancelarReserva(Reserva reserva) {
+        reserva.getQuarto().setReservado(false);
+        reserva.setAtivo(false);;
+        
+    }
+
+    public RegistroServico solicitarServico(Servico servico) {
+        this.conta += servico.getPreco();
+        RegistroServico reg = new RegistroServico(this, servico);
+        return reg;
+    }
+
+    public RegistroConsumo consumirItem(Item item, Quarto quarto) {
+        RegistroConsumo registroConsumo = new RegistroConsumo(item, quarto, this);
+        quarto.removerItem(item);
         this.conta += item.getPreco();
+        return registroConsumo;
     }
 
     public UUID getId() {

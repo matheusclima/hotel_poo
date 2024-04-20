@@ -3,11 +3,12 @@ package domain;
 import java.util.UUID;
 
 public class Item {
-    private UUID id = UUID.randomUUID();
+    private UUID id;
     private String desc;
     private double preco;
 
     public Item(String desc, double preco) {
+        this.id = UUID.randomUUID();
         this.desc = desc;
         this.preco = preco;
     }
